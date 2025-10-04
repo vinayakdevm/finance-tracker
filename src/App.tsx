@@ -71,9 +71,9 @@ const initialExpenseCategories: ExpenseCategory[] = [
 ];
 
 function App() {
-  const [transactions, setTransactions] = useLocalStorage<Transaction[]>('transactions', []);
-  const [goals, setGoals] = useLocalStorage<Goal[]>('goals', []);
-  const [expenseCategories, setExpenseCategories] = useLocalStorage<ExpenseCategory[]>('expenseCategories', initialExpenseCategories);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [expenseCategories, setExpenseCategories] = useState<ExpenseCategory[]>(initialExpenseCategories);
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState('Last 30 Days');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
@@ -88,22 +88,10 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(() => {
-    const hasVisited = localStorage.getItem('hasVisitedFinanceFlow');
-    return !hasVisited;
-  });
+  const [showWelcome, setShowWelcome] = useState(true);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      setIsDarkMode(true);
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
-
   const handleGetStarted = () => {
-    localStorage.setItem('hasVisitedFinanceFlow', 'true');
     setShowWelcome(false);
   };
 
@@ -171,10 +159,8 @@ function App() {
     setIsDarkMode(!isDarkMode);
     if (!isDarkMode) {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
     }
   };
 
