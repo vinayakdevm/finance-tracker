@@ -29,6 +29,8 @@ interface SidebarProps {
   balance: number;
   monthlyChange: number;
   goalsCount: number;
+  onSettingsClick: () => void;
+  onHelpClick: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -41,7 +43,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   setIsMobileMenuOpen,
   balance,
   monthlyChange,
-  goalsCount
+  goalsCount,
+  onSettingsClick,
+  onHelpClick
 }) => {
   const navigationItems = [
     { icon: Home, label: 'Dashboard', view: 'dashboard', badge: null },
@@ -195,6 +199,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         <div className="p-4 border-t border-gray-800 dark:border-gray-700">
           <div className="space-y-2">
             <button
+              onClick={onSettingsClick}
               className={`w-full flex items-center rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 ${
                 isCollapsed ? 'justify-center p-3' : 'justify-start space-x-3 px-4 py-3'
               }`}
@@ -204,6 +209,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               {!isCollapsed && <span>Settings</span>}
             </button>
             <button
+              onClick={onHelpClick}
               className={`w-full flex items-center rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 ${
                 isCollapsed ? 'justify-center p-3' : 'justify-start space-x-3 px-4 py-3'
               }`}

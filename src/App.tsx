@@ -38,6 +38,8 @@ import ViewTransition from './components/ViewTransition';
 import PieChart from './components/PieChart';
 import LineChart from './components/LineChart';
 import Footer from './components/Footer';
+import WelcomeLanding from './components/WelcomeLanding';
+import HelpSupportPanel from './components/HelpSupportPanel';
 import { Transaction, Category, Goal, ExpenseCategory } from './types';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { 
@@ -86,6 +88,11 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(() => {
+    const hasVisited = localStorage.getItem('hasVisitedFinanceFlow');
+    return !hasVisited;
+  });
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -94,6 +101,11 @@ function App() {
       document.documentElement.classList.add('dark');
     }
   }, []);
+
+  const handleGetStarted = () => {
+    localStorage.setItem('hasVisitedFinanceFlow', 'true');
+    setShowWelcome(false);
+  };
 
   // Calculate real metrics from transactions
   const metrics = useMemo(() => calculateMetrics(transactions), [transactions]);
@@ -751,6 +763,14 @@ function App() {
     }
   };
 
+  if (showWelcome) {
+    return (
+      <div className={isDarkMode ? 'dark' : ''}>
+        <WelcomeLanding onGetStarted={handleGetStarted} />
+      </div>
+    );
+  }
+
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDarkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
       <Sidebar
@@ -764,6 +784,8 @@ function App() {
         balance={metrics.balance}
         monthlyChange={monthlyChange}
         goalsCount={goals.length}
+        onSettingsClick={() => setIsSettingsOpen(true)}
+        onHelpClick={() => setIsHelpOpen(true)}
       />
       
       <div className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
@@ -912,8 +934,15 @@ function App() {
         />
       )}
 
+      {isHelpOpen && (
+        <HelpSupportPanel
+          isOpen={isHelpOpen}
+          onClose={() => setIsHelpOpen(false)}
+        />
+      )}
+
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden animate-fade-in"
           onClick={() => setIsMobileMenuOpen(false)}
         />
